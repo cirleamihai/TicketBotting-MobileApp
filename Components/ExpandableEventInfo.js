@@ -1,4 +1,4 @@
-import {Animated, Button, Pressable, StyleSheet, Text, View} from "react-native";
+import {Alert, Animated, Button, Pressable, StyleSheet, Text, View} from "react-native";
 import React, {useState, useRef} from "react";
 
 export default function ExpandableEventInfo(props) {
@@ -38,6 +38,24 @@ export default function ExpandableEventInfo(props) {
         }
     };
 
+    const handleDelete = () => {
+        Alert.alert(
+            "Confirm Delete",
+            "Are you sure you want to delete this event?",
+            [
+                {
+                    text: "Cancel",
+                    style: "cancel",
+                },
+                {
+                    text: "Delete",
+                    onPress: () => props.onDelete(props.concertEvent),
+                },
+            ],
+            { cancelable: true }
+        );
+    };
+
     return (
         <View style={styles.extendableContainer}>
             <Pressable key={props.concertEvent.id} onPress={handlePress}>
@@ -48,7 +66,7 @@ export default function ExpandableEventInfo(props) {
                 </View>
                 {isExpanded && (
                     <Animated.View style={{height: slideAnim, opacity: opacityAnim}}>
-                        <ExtendedEventInfo concertEvent={props.concertEvent}/>
+                        <ExtendedEventInfo  {...props} handleDelete={handleDelete} />
                     </Animated.View>
                 )}
             </Pressable>
@@ -67,9 +85,9 @@ function ExtendedEventInfo(props) {
                 <Text style={styles.titleProps}>Date</Text>
                 <Text style={styles.descriptionText}>{props.concertEvent.formatted_date()}</Text>
             </View>
-            <View style={styles.button}>
-                <Button title={"Edit"} onPress={() => props.onEdit(props.concertEvent)}/>
-
+            <View style={styles.buttonsView}>
+                <Button title={"Edit Event"} onPress={() => props.onEdit(props.concertEvent)}/>
+                <Button title={"Delete Event"} onPress={() => props.handleDelete(props.concertEvent)}></Button>
             </View>
         </View>
     )
@@ -106,10 +124,10 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
         alignSelf: 'flex-start',
     },
-    button: {
+    buttonsView: {
         marginTop: 10,
-        alignItems: 'stretch',
-        justifyContent: 'center',
-        width: "40%"
+        flexDirection: "row",
+        alignItems: 'center',
+        justifyContent: 'space-between',
     }
 })

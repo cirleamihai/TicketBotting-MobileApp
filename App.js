@@ -8,6 +8,7 @@ import ExpandableEventInfo from "./Components/ExpandableEventInfo";
 export default function App() {
     const [isAddButtonClicked, setIsAddButtonClicked] = useState(false);
     const [pickedEvent, setPickedEvent] = useState(Event.create_empty_event());
+    const [refreshKey, setRefreshKey] = useState(0);
 
     const handleAddEvent = () => {
         setIsAddButtonClicked(true);
@@ -21,6 +22,11 @@ export default function App() {
     const handleCancelAddEventModal = () => {
         setIsAddButtonClicked(false);
         setPickedEvent(Event.create_empty_event());
+    }
+
+    const onDelete = async (event) => {
+        await eventsRepo.deleteEvent(event);
+        setRefreshKey(refreshKey + 1);
     }
 
     useEffect(() => {
@@ -45,7 +51,8 @@ export default function App() {
                     return (
                         <ExpandableEventInfo
                             concertEvent={Event.from_object(pickedEvent.item)}
-                            onEdit={handleEditEvent}/>
+                            onEdit={handleEditEvent}
+                            onDelete={onDelete}/>
                     );
                 }}/>
             </View>
