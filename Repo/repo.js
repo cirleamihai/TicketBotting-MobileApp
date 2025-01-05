@@ -30,7 +30,7 @@ class EventsRepo {
 }
 
 const sampleEvents = [
-    new Event(null, "Rock Night", "A night of rock music.", "The Rockers", new Date(2025, 0, 15)),
+    new Event(null, "Rock Night", "A night of rock music. Tap into the universe of rock with us!", "The Rockers", new Date(2025, 0, 15)),
     new Event(null, "Jazz Evening", "An intimate evening with jazz classics.", "Smooth Jazz Trio", new Date(2025, 1, 20)),
     new Event(null, "Indie Vibes", "Indie artists showcasing their best work.", "IndieSound Collective", new Date(2025, 2, 10)),
     new Event(null, "Hip-Hop Beats", "The best hip-hop show of the year.", "DJ Flow", new Date(2025, 3, 5)),

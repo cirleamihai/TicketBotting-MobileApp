@@ -5,27 +5,15 @@ export default function ExpandableEventInfo(props) {
     const [isExpanded, setIsExpanded] = useState(false);
     const slideAnim = useRef(new Animated.Value(0)).current; // Animation ref for height
     const opacityAnim = useRef(new Animated.Value(0)).current; // Animation ref for opacity
+    const [contentHeight, setContentHeight] = useState(0); // State to store content height
 
     const handlePress = () => {
-        if (isExpanded) {
-            // Animate slide up (collapse)
+        if (!isExpanded) {
+            // Expand
+            setIsExpanded(true); // set expanded FIRST so the child is rendered
             Animated.parallel([
                 Animated.timing(slideAnim, {
-                    toValue: 0,
-                    duration: 300,
-                    useNativeDriver: false, // Native driver doesn't support height animations
-                }),
-                Animated.timing(opacityAnim, {
-                    toValue: 0,
-                    duration: 300,
-                    useNativeDriver: false,
-                }),
-            ]).start(() => setIsExpanded(false)); // Collapse fully before hiding content
-        } else {
-            setIsExpanded(true); // Expand before starting animation
-            Animated.parallel([
-                Animated.timing(slideAnim, {
-                    toValue: 150, // Adjust height for expanded content
+                    toValue: contentHeight, // or contentHeight, see notes below
                     duration: 300,
                     useNativeDriver: false,
                 }),
@@ -33,8 +21,25 @@ export default function ExpandableEventInfo(props) {
                     toValue: 1,
                     duration: 300,
                     useNativeDriver: false,
-                }),
+                })
             ]).start();
+        } else {
+            // Collapse
+            Animated.parallel([
+                Animated.timing(slideAnim, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: false,
+                }),
+                Animated.timing(opacityAnim, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: false,
+                })
+            ]).start(() => {
+                // After collapsing, hide the child
+                setIsExpanded(false);
+            });
         }
     };
 
@@ -52,7 +57,7 @@ export default function ExpandableEventInfo(props) {
                     onPress: () => props.onDelete(props.concertEvent),
                 },
             ],
-            { cancelable: true }
+            {cancelable: true}
         );
     };
 
@@ -66,10 +71,22 @@ export default function ExpandableEventInfo(props) {
                 </View>
                 {isExpanded && (
                     <Animated.View style={{height: slideAnim, opacity: opacityAnim}}>
-                        <ExtendedEventInfo  {...props} handleDelete={handleDelete} />
+                        <ExtendedEventInfo
+                            {...props}
+                            handleDelete={handleDelete}
+                            setContentHeight={setContentHeight}
+                        />
                     </Animated.View>
                 )}
             </Pressable>
+
+
+            <MeasuringContainer onMeasured={(h) => setContentHeight(h)}>
+                <ExtendedEventInfo
+                    {...props}
+                    handleDelete={handleDelete}
+                />
+            </MeasuringContainer>
         </View>
     );
 }
@@ -86,11 +103,31 @@ function ExtendedEventInfo(props) {
                 <Text style={styles.descriptionText}>{props.concertEvent.formatted_date()}</Text>
             </View>
             <View style={styles.buttonsView}>
-                <Button title={"Edit Event"} onPress={() => props.onEdit(props.concertEvent)}/>
-                <Button title={"Delete Event"} onPress={() => props.handleDelete(props.concertEvent)}></Button>
+                <View style={styles.button}>
+                    <Button title={"Edit Event"} onPress={() => props.onEdit(props.concertEvent)}/>
+                </View>
+                <View style={styles.button}>
+                    <Button title={"Delete Event"} onPress={() => props.handleDelete(props.concertEvent)}></Button>
+                </View>
             </View>
         </View>
     )
+}
+
+function MeasuringContainer({children, onMeasured}) {
+    return (
+        <View
+            style={styles.hiddenContainer}
+            // The onLayout callback is triggered once this component (and its children)
+            // have been laid out by React Native
+            onLayout={(e) => {
+                const height = e.nativeEvent.layout.height;
+                onMeasured(height);
+            }}
+        >
+            {children}
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -98,6 +135,7 @@ const styles = StyleSheet.create({
         margin: 10,
         padding: 10,
         backgroundColor: '#8a09bc',
+        width: 300,
     },
     whiteContrastTextColor: {
         alignItems: 'center',
@@ -121,13 +159,19 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginLeft: 5,
         color: '#ffffff',
-        flexWrap: "wrap",
-        alignSelf: 'flex-start',
     },
     buttonsView: {
         marginTop: 10,
         flexDirection: "row",
         alignItems: 'center',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
+    },
+    button: {
+        marginHorizontal: 25,
+    },
+    hiddenContainer: {
+        position: 'absolute',
+        top: -9999,
+        left: -9999,
     }
 })

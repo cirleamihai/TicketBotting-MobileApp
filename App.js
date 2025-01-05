@@ -1,4 +1,4 @@
-import {Button, StyleSheet, Text, View, Modal, Pressable, FlatList} from 'react-native';
+import {Button, StyleSheet, View, Modal, FlatList} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AddOrEditEvent from "./Components/AddOrEditEvent";
 import Event from "./Entities/events";
@@ -32,8 +32,6 @@ export default function App() {
     useEffect(() => {
         eventsRepo.fetchAllEvents().then(r => console.log(r));
     }, []);
-    console.log("PickedEvent: ", pickedEvent);
-    console.log(Object.getOwnPropertyNames(pickedEvent));
 
     return (
         <View style={styles.appLayover}>
