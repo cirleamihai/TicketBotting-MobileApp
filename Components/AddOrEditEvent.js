@@ -1,18 +1,18 @@
-import {Button, TextInput, Text, View, StyleSheet, Pressable} from "react-native";
+import {Button, TextInput, View, StyleSheet, Pressable} from "react-native";
 import {useState} from "react";
 import {DateTimePickerAndroid} from "@react-native-community/datetimepicker";
 import eventsRepo from "../Repo/repo.js";
 
 export default function AddOrEditEvent(props) {
-    let isEmptyEvent = props.event.is_empty();
-    const [event, setEvent] = useState(props.event);
-    const [date, setDate] = useState(event.date);
+    let isEmptyEvent = props.isEmpty;
+    const [eventEntity, setEventEntity] = useState(props.event);
+    const [date, setDate] = useState(eventEntity.date);
 
     const handleSave = async () => {
         if (isEmptyEvent) {
-            await eventsRepo.addEvent(event); // If the event was empty, it means it s from add
+            await eventsRepo.addEvent(eventEntity); // If the event was empty, it means it s from add
         } else {
-            await eventsRepo.updateEvent(event); // Otherwise, it means it s from edit
+            await eventsRepo.updateEvent(eventEntity); // Otherwise, it means it s from edit
         }
         props.onClose();
     }
@@ -25,7 +25,7 @@ export default function AddOrEditEvent(props) {
             onChange: (event, selectedDate) => {
                 if (event.type === "set" && selectedDate) {
                     setDate(selectedDate);
-                    setEvent({...event, date: selectedDate});
+                    setEventEntity({...eventEntity, date: selectedDate});
                 }
             },
         });
@@ -36,14 +36,14 @@ export default function AddOrEditEvent(props) {
             <View style={styles.batchOf2Inputs}>
                 <TextInput
                     placeholder={"Event Name"}
-                    value={event.eventName}
-                    onChangeText={(text) => setEvent({...event, eventName: text})}
+                    value={eventEntity.eventName}
+                    onChangeText={(text) => setEventEntity({...eventEntity, eventName: text})}
                     style={styles.input}
                 />
                 <TextInput
                     placeholder={"Description"}
-                    value={event.description}
-                    onChangeText={(text) => setEvent({...event, description: text})}
+                    value={eventEntity.description}
+                    onChangeText={(text) => setEventEntity({...eventEntity, description: text})}
                     style={styles.input}
                 />
             </View>
@@ -51,8 +51,8 @@ export default function AddOrEditEvent(props) {
                 <View style={styles.input}>
                     <TextInput
                         placeholder={"Artist"}
-                        value={event.artist}
-                        onChangeText={(text) => setEvent({...event, artist: text})}
+                        value={eventEntity.artist}
+                        onChangeText={(text) => setEventEntity({...eventEntity, artist: text})}
                     />
                 </View>
                 <View style={styles.input}>

@@ -1,13 +1,20 @@
-import {Button, StyleSheet, Text, View, Modal} from 'react-native';
+import {Button, StyleSheet, Text, View, Modal, Pressable, FlatList} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AddOrEditEvent from "./Components/AddOrEditEvent";
 import Event from "./Entities/events";
 import eventsRepo from "./Repo/repo";
+import ExpandableEventInfo from "./Components/ExpandableEventInfo";
 
 export default function App() {
     const [isAddButtonClicked, setIsAddButtonClicked] = useState(false);
+    const [pickedEvent, setPickedEvent] = useState(Event.create_empty_event());
 
     const handleAddEvent = () => {
+        setIsAddButtonClicked(true);
+    }
+
+    const handleEditEvent = (event) => {
+        setPickedEvent(event);
         setIsAddButtonClicked(true);
     }
 
@@ -16,31 +23,29 @@ export default function App() {
     }
 
     useEffect(() => {
-        eventsRepo.fetchAllEvents();
+        eventsRepo.fetchAllEvents().then(r => console.log(r));
     }, []);
+    console.log("PickedEvent: ", pickedEvent);
 
     return (
         <View style={styles.appLayover}>
             <Modal visible={isAddButtonClicked} animationType="slide">
-            <AddOrEditEvent event={Event.create_empty_event()} onClose={handleCancelAddEventModal}/>
+                <AddOrEditEvent
+                    event={pickedEvent}
+                    isEmpty={pickedEvent.is_empty()}
+                    onClose={handleCancelAddEventModal}/>
             </Modal>
             <View style={styles.addButton}>
                 <Button title={"Add Event"} onPress={handleAddEvent}/>
             </View>
             <View style={styles.eventsList}>
-                {
-                    eventsRepo.getEvents().map((concertEvent) => {
-                        return (
-                            <View key={concertEvent.id} style={{marginBottom: 20}}>
-                                <Text>{concertEvent.eventName}</Text>
-                                <Text>{concertEvent.description}</Text>
-                                <Text>{concertEvent.artist}</Text>
-                                <Text>{concertEvent.date.toString()}</Text>
-                            </View>
-                        )
-                    })
-                }
-
+                <FlatList data={eventsRepo.getEvents()} renderItem={(pickedEvent) => {
+                    return (
+                        <ExpandableEventInfo
+                            concertEvent={pickedEvent.item}
+                            onEdit={handleEditEvent}/>
+                    );
+                }}/>
             </View>
         </View>
     );
