@@ -44,7 +44,7 @@ export default function ExpandableEventInfo(props) {
             {isExpanded && (
                 <Animated.View style={{ height: slideAnim, opacity: opacityAnim }}>
                     <Text>{props.concertEvent.description}</Text>
-                    <Text>{props.concertEvent.date}</Text>
+                    <Text>{props.concertEvent.formatted_date()}</Text>
                     <Button title={"Edit"} onPress={() => props.onEdit(props.concertEvent)} />
                 </Animated.View>
             )}

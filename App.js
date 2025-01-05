@@ -20,12 +20,14 @@ export default function App() {
 
     const handleCancelAddEventModal = () => {
         setIsAddButtonClicked(false);
+        setPickedEvent(Event.create_empty_event());
     }
 
     useEffect(() => {
         eventsRepo.fetchAllEvents().then(r => console.log(r));
     }, []);
     console.log("PickedEvent: ", pickedEvent);
+    console.log(Object.getOwnPropertyNames(pickedEvent));
 
     return (
         <View style={styles.appLayover}>
@@ -42,7 +44,7 @@ export default function App() {
                 <FlatList data={eventsRepo.getEvents()} renderItem={(pickedEvent) => {
                     return (
                         <ExpandableEventInfo
-                            concertEvent={pickedEvent.item}
+                            concertEvent={Event.from_object(pickedEvent.item)}
                             onEdit={handleEditEvent}/>
                     );
                 }}/>

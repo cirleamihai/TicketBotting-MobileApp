@@ -20,13 +20,17 @@ class Event {
         return new Event(null, '', '', '', null);
     }
 
+    static from_object(obj) {
+        return new Event(obj.id, obj.eventName, obj.description, obj.artist, obj.date);
+    }
+
     is_empty() {
         return !this.eventName && !this.description && !this.artist && !this.date;
     }
 
     formatted_date() {
         if (this.date) {
-            return '{}-{}-{}'.format(this.date.getFullYear(), this.date.getMonth(), this.date.getDate());
+            return new Date(this.date).toDateString();
         }
         return '';
     }
