@@ -1,4 +1,4 @@
-import {Animated, Button, Pressable, StyleSheet, Text} from "react-native";
+import {Animated, Button, Pressable, StyleSheet, Text, View} from "react-native";
 import React, {useState, useRef} from "react";
 
 export default function ExpandableEventInfo(props) {
@@ -25,7 +25,7 @@ export default function ExpandableEventInfo(props) {
             setIsExpanded(true); // Expand before starting animation
             Animated.parallel([
                 Animated.timing(slideAnim, {
-                    toValue: 100, // Adjust height for expanded content
+                    toValue: 150, // Adjust height for expanded content
                     duration: 300,
                     useNativeDriver: false,
                 }),
@@ -39,19 +39,77 @@ export default function ExpandableEventInfo(props) {
     };
 
     return (
-        <Pressable key={props.concertEvent.id} onPress={handlePress} style={{ padding: 10 }}>
-            <Text>{props.concertEvent.artist} | {props.concertEvent.eventName}</Text>
-            {isExpanded && (
-                <Animated.View style={{ height: slideAnim, opacity: opacityAnim }}>
-                    <Text>{props.concertEvent.description}</Text>
-                    <Text>{props.concertEvent.formatted_date()}</Text>
-                    <Button title={"Edit"} onPress={() => props.onEdit(props.concertEvent)} />
-                </Animated.View>
-            )}
-        </Pressable>
+        <View style={styles.extendableContainer}>
+            <Pressable key={props.concertEvent.id} onPress={handlePress}>
+                <View style={{justifyContent: "center", alignItems: "center"}}>
+                    <Text style={styles.whiteContrastTextColor}>
+                        {props.concertEvent.artist} | {props.concertEvent.eventName}
+                    </Text>
+                </View>
+                {isExpanded && (
+                    <Animated.View style={{height: slideAnim, opacity: opacityAnim}}>
+                        <ExtendedEventInfo concertEvent={props.concertEvent}/>
+                    </Animated.View>
+                )}
+            </Pressable>
+        </View>
     );
 }
 
-const styles = StyleSheet.create({
+function ExtendedEventInfo(props) {
+    return (
+        <View>
+            <View style={styles.propertyContainer}>
+                <Text style={styles.titleProps}>Description</Text>
+                <Text style={styles.descriptionText}>{props.concertEvent.description}</Text>
+            </View>
+            <View style={[styles.propertyContainer]}>
+                <Text style={styles.titleProps}>Date</Text>
+                <Text style={styles.descriptionText}>{props.concertEvent.formatted_date()}</Text>
+            </View>
+            <View style={styles.button}>
+                <Button title={"Edit"} onPress={() => props.onEdit(props.concertEvent)}/>
 
+            </View>
+        </View>
+    )
+}
+
+const styles = StyleSheet.create({
+    extendableContainer: {
+        margin: 10,
+        padding: 10,
+        backgroundColor: '#8a09bc',
+    },
+    whiteContrastTextColor: {
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontWeight: "bold",
+        color: '#ffffff',
+    },
+    propertyContainer: {
+        alignSelf: "flex-start",
+        marginTop: 10,
+        marginLeft: 5,
+    },
+    titleProps: {
+        fontWeight: "bold",
+        color: '#eceaea',
+        borderBottomWidth: 0.5,
+        borderBottomColor: '#eceaea',
+        alignSelf: 'flex-start'
+    },
+    descriptionText: {
+        marginTop: 5,
+        marginLeft: 5,
+        color: '#ffffff',
+        flexWrap: "wrap",
+        alignSelf: 'flex-start',
+    },
+    button: {
+        marginTop: 10,
+        alignItems: 'stretch',
+        justifyContent: 'center',
+        width: "40%"
+    }
 })
