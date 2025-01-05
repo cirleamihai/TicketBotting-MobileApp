@@ -13,7 +13,7 @@ export default function ExpandableEventInfo(props) {
             setIsExpanded(true); // set expanded FIRST so the child is rendered
             Animated.parallel([
                 Animated.timing(slideAnim, {
-                    toValue: contentHeight, // or contentHeight, see notes below
+                    toValue: contentHeight,
                     duration: 300,
                     useNativeDriver: false,
                 }),
@@ -70,7 +70,7 @@ export default function ExpandableEventInfo(props) {
                     </Text>
                 </View>
                 {isExpanded && (
-                    <Animated.View style={{height: slideAnim, opacity: opacityAnim}}>
+                    <Animated.View style={{opacity: opacityAnim, height: isExpanded ? 'auto' : 0, overflow: "hidden"}}>
                         <ExtendedEventInfo
                             {...props}
                             handleDelete={handleDelete}
