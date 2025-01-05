@@ -1,14 +1,18 @@
 import {Button, TextInput, Text, View, StyleSheet, Pressable} from "react-native";
 import {useState} from "react";
 import {DateTimePickerAndroid} from "@react-native-community/datetimepicker";
+import eventsRepo from "../Repo/repo.js";
 
 export default function AddOrEditEvent(props) {
     let isEmptyEvent = props.event.is_empty();
     const [event, setEvent] = useState(props.event);
     const [date, setDate] = useState(event.date);
 
-    const handleSave = () => {
-        {/* Save the event in the repo*/
+    const handleSave = async () => {
+        if (isEmptyEvent) {
+            await eventsRepo.addEvent(event); // If the event was empty, it means it s from add
+        } else {
+            await eventsRepo.updateEvent(event); // Otherwise, it means it s from edit
         }
         props.onClose();
     }

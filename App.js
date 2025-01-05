@@ -1,8 +1,8 @@
-import {StatusBar} from 'expo-status-bar';
 import {Button, StyleSheet, Text, View, Modal} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import AddOrEditEvent from "./Components/AddOrEditEvent";
 import Event from "./Entities/events";
+import eventsRepo from "./Repo/repo";
 
 export default function App() {
     const [isAddButtonClicked, setIsAddButtonClicked] = useState(false);
@@ -15,6 +15,10 @@ export default function App() {
         setIsAddButtonClicked(false);
     }
 
+    useEffect(() => {
+        eventsRepo.fetchAllEvents();
+    }, []);
+
     return (
         <View style={styles.appLayover}>
             <Modal visible={isAddButtonClicked} animationType="slide">
@@ -24,7 +28,18 @@ export default function App() {
                 <Button title={"Add Event"} onPress={handleAddEvent}/>
             </View>
             <View style={styles.eventsList}>
-                {/* List of events */}
+                {
+                    eventsRepo.getEvents().map((concertEvent) => {
+                        return (
+                            <View key={concertEvent.id} style={{marginBottom: 20}}>
+                                <Text>{concertEvent.eventName}</Text>
+                                <Text>{concertEvent.description}</Text>
+                                <Text>{concertEvent.artist}</Text>
+                                <Text>{concertEvent.date.toString()}</Text>
+                            </View>
+                        )
+                    })
+                }
 
             </View>
         </View>
