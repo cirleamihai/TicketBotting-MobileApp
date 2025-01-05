@@ -21,7 +21,14 @@ class Event {
     }
 
     is_empty() {
-        return this.eventName === '' && this.description === '' && this.artist === '' && this.date === '';
+        return !this.eventName && !this.description && !this.artist && !this.date;
+    }
+
+    formatted_date() {
+        if (this.date) {
+            return '{}-{}-{}'.format(this.date.getFullYear(), this.date.getMonth(), this.date.getDate());
+        }
+        return '';
     }
 }
 
