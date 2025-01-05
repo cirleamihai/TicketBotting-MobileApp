@@ -1,6 +1,8 @@
 import {StatusBar} from 'expo-status-bar';
 import {Button, StyleSheet, Text, View, Modal} from 'react-native';
 import React, {useState} from 'react';
+import AddOrEditEvent from "./Components/AddOrEditEvent";
+import Event from "./Entities/events";
 
 export default function App() {
     const [isAddButtonClicked, setIsAddButtonClicked] = useState(false);
@@ -9,14 +11,14 @@ export default function App() {
         setIsAddButtonClicked(true);
     }
 
-    const handleCancelAddEvent = () => {
+    const handleCancelAddEventModal = () => {
         setIsAddButtonClicked(false);
     }
 
     return (
         <View style={styles.appLayover}>
             <Modal visible={isAddButtonClicked} animationType="slide">
-
+            <AddOrEditEvent event={Event.create_empty_event()} onClose={handleCancelAddEventModal}/>
             </Modal>
             <View style={styles.addButton}>
                 <Button title={"Add Event"} onPress={handleAddEvent}/>
