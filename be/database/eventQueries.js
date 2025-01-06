@@ -59,7 +59,7 @@ async function updateEvent(event) {
     })
 }
 
-async function deleteEvent(event) {
+async function deleteEvent(eventId) {
     const db = open_db();
 
     return new Promise((resolve, reject) => {
@@ -68,14 +68,14 @@ async function deleteEvent(event) {
             WHERE id = ?
         `)
 
-        stmt.run(event.id, function(err) {
+        stmt.run(eventId, function(err) {
             db.close(); // Close the database connection
             stmt.finalize(); // Close the statement
 
             if (err) {
                 reject(err);
             } else {
-                resolve(`Successfully deleted event ${event.formatted_display()}.`);
+                resolve(`Successfully deleted event ${eventId}.`);
             }
         });
     })

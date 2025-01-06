@@ -30,7 +30,7 @@ export default function App() {
     }
 
     useEffect(() => {
-        eventsRepo.fetchAllEvents().then(r => console.log(r));
+        eventsRepo.fetchAllEvents().then(() => setRefreshKey(refreshKey + 1));
     }, []);
 
     return (

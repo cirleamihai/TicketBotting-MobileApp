@@ -10,8 +10,8 @@ class EventsRepo {
         return updateEvent(event);
     }
 
-    async deleteEvent(event) {
-        return deleteEvent(event);
+    async deleteEvent(eventId) {
+        return deleteEvent(eventId);
     }
 
     async fetchAllEvents() {

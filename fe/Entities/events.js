@@ -21,6 +21,9 @@ class Event {
     }
 
     static from_object(obj) {
+        if (typeof obj.date === "string") {
+            obj.date = new Date(obj.date)
+        }
         return new Event(obj.id, obj.eventName, obj.description, obj.artist, obj.date);
     }
 

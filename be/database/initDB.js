@@ -1,6 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
 const Event = require('../entities/event'); // Import your Event class
-const db_name = './events.db';
+const db_name = require('path').join(__dirname, 'events.db');
 
 function open_db() {
     return new sqlite3.Database(db_name);

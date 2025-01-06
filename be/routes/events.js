@@ -29,7 +29,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const event = req.body;
+        const event = req.body.event; // Assuming the event is sent in the request body
         const result = await eventsRepo.addEvent(Event.from_object(event));
         res.status(201).json({message: result});
     } catch (error) {
@@ -39,7 +39,7 @@ router.post('/', async (req, res) => {
 
 router.put('/:id', async (req, res) => {
     try {
-        const event = req.body;
+        const event = req.body.event;
         const result = await eventsRepo.updateEvent(Event.from_object(event));
         res.status(200).json({message: result});
     } catch (error) {
@@ -49,8 +49,8 @@ router.put('/:id', async (req, res) => {
 
 router.delete('/:id', async (req, res) => {
     try {
-        const event = req.body;
-        const result = await eventsRepo.deleteEvent(Event.from_object(event));
+        const eventId = req.params.id;
+        const result = await eventsRepo.deleteEvent(eventId);
         res.status(200).json({message: result});
     } catch (error) {
         res.status(500).json({error: 'Internal Server Error'});
