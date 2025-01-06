@@ -4,6 +4,7 @@ import AddOrEditEvent from "./Components/AddOrEditEvent";
 import Event from "./Entities/events";
 import eventsRepo from "./Repo/repo";
 import ExpandableEventInfo from "./Components/ExpandableEventInfo";
+import {healthCheck} from "./Api/healtcheckAPI";
 
 export default function App() {
     const [isAddButtonClicked, setIsAddButtonClicked] = useState(false);
@@ -31,6 +32,14 @@ export default function App() {
 
     useEffect(() => {
         eventsRepo.fetchAllEvents().then(() => setRefreshKey(refreshKey + 1));
+    }, []);
+
+    useEffect(() => {
+        const interval = setInterval(async () => {
+            await healthCheck(); // Perform health check every 2 seconds
+        }, 2000)
+
+        return () => clearInterval(interval); // Clear interval on component unmount
     }, []);
 
     return (

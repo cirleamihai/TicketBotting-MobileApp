@@ -11,6 +11,12 @@ app.get('/', (req, res) => {
     });
 });
 
+app.get('/health', (req, res) => {
+    res.send({
+        message: 'Server is healthy'
+    });
+});
+
 app.listen(5050, () => {
         console.log('Server is running on port 5050');
 });

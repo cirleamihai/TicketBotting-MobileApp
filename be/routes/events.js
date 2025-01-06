@@ -57,4 +57,14 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+router.post('/sync', async (req, res) => {
+    try {
+        const events = req.body.events.map(event => Event.from_object(event));
+        const result = await eventsRepo.syncEvents(events);
+        res.status(200).json({message: result});
+    } catch (error) {
+        res.status(500).json({error: 'Internal Server Error'});
+    }
+});
+
 module.exports = router;

@@ -1,4 +1,4 @@
-const { addEvent, updateEvent, deleteEvent, fetchAllEvents } = require('../database/eventQueries.js');
+const { addEvent, updateEvent, deleteEvent, fetchAllEvents, syncEvents } = require('../database/eventQueries.js');
 
 class EventsRepo {
 
@@ -16,6 +16,10 @@ class EventsRepo {
 
     async fetchAllEvents() {
         return fetchAllEvents();
+    }
+
+    async syncEvents(events) {
+        return syncEvents(events)
     }
 
 }
